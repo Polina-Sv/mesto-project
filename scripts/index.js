@@ -30,13 +30,19 @@ function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
 }
 
+//---------------------------------------
 
 const profileEditBtn = document.querySelector('.profile__edit-button');
 profileEditBtn.addEventListener('click', evt => {
     inputName.value = document.querySelector('.profile__title').textContent;
     inputDesc.value = document.querySelector('.profile__description').textContent;
     openModal(profilePopup);
-})
+});
+
+const profilePopupCloseBtn = profilePopup.querySelector('.popup__close');
+profilePopupCloseBtn.addEventListener('click', evt => {
+    closeModal(profilePopup);
+});
 
 const inputName = profilePopup.querySelector('.popup__input_type_name');
 const inputDesc = profilePopup.querySelector('.popup__input_type_description');
@@ -49,16 +55,29 @@ profileForm.addEventListener('submit', evt => {
     closeModal(profilePopup);
 }); 
 
-const profilePopupCloseBtn = profilePopup.querySelector('.popup__close');
-profilePopupCloseBtn.addEventListener('click', evt => {
-    closeModal(profilePopup);
-})
+//---------------------------------------
 
+const cardAddBtn = document.querySelector('.profile__add-button');
+cardAddBtn.addEventListener('click', evt => {
+    openModal(cardPopup);
+});
 
-// @todo: DOM узлы
+const cardPopupCloseBtn = cardPopup.querySelector('.popup__close');
+cardPopupCloseBtn.addEventListener('click', evt => {
+    closeModal(cardPopup);
+});
 
-// @todo: Функция создания карточки
+const inputCardName = cardPopup.querySelector('.popup__input_type_card-name');
+const inputUrl = cardPopup.querySelector('.popup__input_type_url');
+const cardForm = document.forms['new-place'];
 
-// @todo: Функция удаления карточки
-
-// @todo: Вывести карточки на страницу
+cardForm.addEventListener('submit', evt => {
+    evt.preventDefault();
+    const info = {
+        name: inputCardName.value,
+        link: inputUrl.value,
+    }
+    const card = createCard(info);
+    cardContainer.prepend(card);
+    closeModal(cardPopup);
+});
