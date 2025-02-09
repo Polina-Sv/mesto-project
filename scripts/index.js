@@ -9,6 +9,9 @@ function createCard(item) {
 
   cardElement.querySelector('.card__title').textContent = item.name;
   cardElement.querySelector('.card__image').src = item.link;
+  cardElement.querySelector('.card__like-button').addEventListener('click', evt => {
+    evt.target.classList.toggle('card__like-button_is-active');
+  });
 
   return cardElement;
 }
