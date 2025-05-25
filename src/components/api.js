@@ -19,3 +19,23 @@ export const getUserData = () => {
     }).then(checkResponse);
 };
 
+export const getInitialCards = () => {
+    return fetch(`${config.baseUrl}/cards`, {
+      headers: config.headers
+    }).then(checkResponse);
+  };
+
+export const addNewCard = (name, link) => {
+    return fetch(`${config.baseUrl}/cards`, {
+      method: 'POST',
+      headers: config.headers,
+      body: JSON.stringify({ name, link })
+    }).then(checkResponse);
+};
+  
+export const deleteCardApi = (cardId) => {
+    return fetch(`${config.baseUrl}/cards/${cardId}`, {
+      method: 'DELETE',
+      headers: config.headers
+    }).then(checkResponse);
+};

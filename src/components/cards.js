@@ -1,52 +1,59 @@
 import { openModal } from "./modal.js";
-const initialCards = [
-  {
-    name: "Архыз",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    name: "Челябинская область",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-  },
-  {
-    name: "Иваново",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-  },
-  {
-    name: "Камчатка",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-  },
-  {
-    name: "Холмогорский район",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-  },
-  {
-    name: "Байкал",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
+import { getInitialCards, addNewCard, deleteCardApi } from './api.js';
+
+const cardsContainer = document.querySelector('.places__list');
+
+export function loadAndRenderCards(userId) {
+  return getInitialCards()
+    .then(cards => {
+      renderCards(cards, userId);
+      return cards;
+    })
+    .catch(err => {
+      console.error('Ошибка загрузки карточек:', err);
+      throw err;
+    });
+}
+
+function renderCards(cards, userId) {
+  cardsContainer.innerHTML = '';
+  cards.forEach(card => {
+    const cardElement = createCardElement(card, userId);
+    cardsContainer.append(cardElement);
+  });
+}
+//const imagePopup = document.querySelector('.popup_type_image');
+
+function createCardElement(cardData, userId) {
+  const cardTemplate = document.querySelector('#card-template').content;
+  const cardElement = cardTemplate.cloneNode(true).querySelector('.card');
+
+  const cardImage = cardElement.querySelector('.card__image');
+  const cardTitle = cardElement.querySelector('.card__title');
+  const likeCountElement = cardElement.querySelector('.card__like-count');
+  const deleteButton = cardElement.querySelector('.card__delete-button');
+
+  cardImage.src = cardData.link;
+  cardImage.alt = cardData.name;
+  cardTitle.textContent = cardData.name;
+  likeCountElement.textContent = cardData.likes.length;
+
+  if (cardData.owner._id === userId) {
+    deleteButton.style.display = 'block';
+    deleteButton.addEventListener('click', () => handleDeleteCard(cardData._id, cardElement));
+  } else {
+    deleteButton.style.display = 'none';
   }
-];
-
-const cardTemplate = document.querySelector('#card-template').content;
-const card = cardTemplate.querySelector('.card');
-const imagePopup = document.querySelector('.popup_type_image');
-
-function createCard(item) {
-  const cardElement = card.cloneNode(true);
-
-  cardElement.querySelector('.card__title').textContent = item.name;
-  cardElement.querySelector('.card__image').src = item.link;
-  cardElement.querySelector('.card__image').addEventListener('click', evt => {
-    imagePopup.querySelector('.popup__image').src = item.link;
-    imagePopup.querySelector('.popup__caption').textContent = item.name;
-    openModal(imagePopup);
-  });
-  cardElement.querySelector('.card__like-button').addEventListener('click', evt => {
-    evt.target.classList.toggle('card__like-button_is-active');
-  });
-  cardElement.querySelector('.card__delete-button').addEventListener('click', evt => {
-    evt.target.closest('.card').remove();
-  });
 
   return cardElement;
 }
-export { initialCards, createCard };
+
+function handleDeleteCard(cardId, cardElement) {
+  deleteCardApi(cardId)
+    .then(() => {
+      cardElement.remove();
+    })
+    .catch(err => {
+      console.error('Ошибка удаления карточки:', err);
+    });
+}
