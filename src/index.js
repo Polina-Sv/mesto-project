@@ -2,6 +2,19 @@ import {initialCards, createCard} from "./components/cards.js";
 import enableValidation from "./components/validate.js";
 import {closeModal, openModal} from "./components/modal.js";
 import './pages/index.css';
+import { loadProfileData } from './components/profile.js';
+
+function initApp() {
+  loadProfileData()
+    .then(userData => {
+      console.log('Данные профиля загружены:', userData);
+    })
+    .catch(err => {
+      console.error('Ошибка при загрузке приложения:', err);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
 
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
