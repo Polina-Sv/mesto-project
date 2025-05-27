@@ -1,7 +1,7 @@
 import './pages/index.css';
 import enableValidation from "./components/validate.js";
 import {closeModal} from "./components/modal.js";
-import { loadProfileData, initProfileEditing } from './components/profile.js';
+import { loadProfileData, initProfileEditing, initAvatarEditing } from './components/profile.js';
 import { loadAndRenderCards, initCardAdding } from './components/cards.js';
 
 function initApp() {
@@ -10,6 +10,7 @@ function initApp() {
       loadAndRenderCards(userData._id);
       initProfileEditing();
       initCardAdding(userData._id);
+      initAvatarEditing();
     })
     .catch(err => {
       console.error('Ошибка инициализации:', err);

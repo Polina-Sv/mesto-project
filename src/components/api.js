@@ -55,9 +55,17 @@ export const likeCard = (cardId) => {
     }).then(checkResponse);
   };
   
-  export const unlikeCard = (cardId) => {
+export const unlikeCard = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
       method: 'DELETE',
       headers: config.headers
     }).then(checkResponse);
-  };
+};
+
+export const updateAvatar = (avatarUrl) => {
+    return fetch(`${config.baseUrl}/users/me/avatar`, {
+      method: 'PATCH',
+      headers: config.headers,
+      body: JSON.stringify({ avatar: avatarUrl })
+    }).then(checkResponse);
+};

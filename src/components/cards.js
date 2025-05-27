@@ -7,6 +7,9 @@ const addModal = document.querySelector('.popup_type_new-card');
 const addForm = addModal.querySelector('.popup__form');
 const placeNameInput = addForm.querySelector('.popup__input_type_card-name');
 const linkInput = addForm.querySelector('.popup__input_type_url');
+const imagePopup = document.querySelector('.popup_type_image');
+const popupImage = imagePopup.querySelector('.popup__image');
+const popupCaption = imagePopup.querySelector('.popup__caption');
 
 export function initCardAdding(userId) {
   addButton.addEventListener('click', () => {
@@ -87,6 +90,8 @@ function createCardElement(cardData, userId) {
     deleteButton.style.display = 'none';
   }
 
+  cardImage.addEventListener('click', () => openImagePopup(cardData));
+
   return cardElement;
 }
 
@@ -112,4 +117,11 @@ function handleLikeClick(cardId, likeButton, likeCountElement) {
     .catch(err => {
       console.error('Ошибка при обновлении лайка:', err);
     });
+}
+
+function openImagePopup(cardData) {
+  popupImage.src = cardData.link;
+  popupImage.alt = cardData.name;
+  popupCaption.textContent = cardData.name;
+  openModal(imagePopup);
 }
