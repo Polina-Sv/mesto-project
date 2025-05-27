@@ -1,3 +1,10 @@
+const popupCloseBtns = document.querySelectorAll('.popup__close');
+popupCloseBtns.forEach((button) => {
+    button.addEventListener('click', evt => {
+        closeModal(button.closest('.popup'));
+    })
+})
+
 const closePopupOverlay = (evt) => {
     const isClosest = evt.target.closest('.popup__content');
     const isPopupOpened = document.querySelector('.popup_is-opened');
