@@ -1,5 +1,5 @@
 import {closeModal, openModal} from "./modal.js";
-import { getInitialCards, addNewCard, deleteCardApi } from './api.js';
+import {getInitialCards, addNewCard, deleteCardApi, likeCard, unlikeCard} from './api.js';
 
 const cardsContainer = document.querySelector('.places__list');
 const addButton = document.querySelector('.profile__add-button');
@@ -64,13 +64,21 @@ function createCardElement(cardData, userId) {
 
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
-  const likeCountElement = cardElement.querySelector('.card__like-count');
+  const likeButton = cardElement.querySelector('.card__like-button');
+  const likeCount = cardElement.querySelector('.card__like-count');
   const deleteButton = cardElement.querySelector('.card__delete-button');
 
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
   cardTitle.textContent = cardData.name;
-  likeCountElement.textContent = cardData.likes.length;
+  likeCount.textContent = cardData.likes.length;
+
+  const isLiked = cardData.likes.some(like => like._id === userId);
+  if (isLiked) {
+    likeButton.classList.add('card__like-button_is-active');
+  }
+
+  likeButton.addEventListener('click', () => handleLikeClick(cardData._id, likeButton, likeCount));
 
   if (cardData.owner._id === userId) {
     deleteButton.style.display = 'block';
@@ -89,5 +97,19 @@ function handleDeleteCard(cardId, cardElement) {
     })
     .catch(err => {
       console.error('Ошибка удаления карточки:', err);
+    });
+}
+
+function handleLikeClick(cardId, likeButton, likeCountElement) {
+  const isLiked = likeButton.classList.contains('card__like-button_is-active');
+  const likeMethod = isLiked ? unlikeCard : likeCard;
+
+  likeMethod(cardId)
+    .then(updatedCard => {
+      likeCountElement.textContent = updatedCard.likes.length;
+      likeButton.classList.toggle('card__like-button_is-active');
+    })
+    .catch(err => {
+      console.error('Ошибка при обновлении лайка:', err);
     });
 }
