@@ -1,17 +1,19 @@
+import './pages/index.css';
 import enableValidation from "./components/validate.js";
 import {closeModal, openModal} from "./components/modal.js";
-import './pages/index.css';
-import { loadProfileData } from './components/profile.js';
+import { loadProfileData, initProfileEditing } from './components/profile.js';
 import { loadAndRenderCards } from './components/cards.js';
 
 function initApp() {
   loadProfileData()
     .then(userData => {
-      console.log('Данные профиля загружены:', userData);
       return loadAndRenderCards(userData._id);
     })
+    .then(() => {
+      initProfileEditing();
+    })
     .catch(err => {
-      console.error('Ошибка при загрузке приложения:', err);
+      console.error('Ошибка инициализации:', err);
     });
 }
 
@@ -26,12 +28,6 @@ profilePopup.classList.add('popup_is-animated');
 cardPopup.classList.add('popup_is-animated');
 imagePopup.classList.add('popup_is-animated');
 
-
-initialCards.forEach(item => {
-    const card = createCard(item);
-    cardContainer.append(card);
-})
-
 const popupCloseBtns = document.querySelectorAll('.popup__close');
 popupCloseBtns.forEach((button) => {
     button.addEventListener('click', evt => {
@@ -39,23 +35,6 @@ popupCloseBtns.forEach((button) => {
     })
 })
 
-const inputName = profilePopup.querySelector('.popup__input_type_name');
-const inputDesc = profilePopup.querySelector('.popup__input_type_description');
-const profileForm = document.forms['edit-profile'];
-const profileEditBtn = document.querySelector('.profile__edit-button');
-
-profileEditBtn.addEventListener('click', evt => {
-    inputName.value = document.querySelector('.profile__title').textContent;
-    inputDesc.value = document.querySelector('.profile__description').textContent;
-    openModal(profilePopup);
-});
-
-profileForm.addEventListener('submit', evt => {
-    evt.preventDefault();
-    document.querySelector('.profile__title').textContent = inputName.value;
-    document.querySelector('.profile__description').textContent = inputDesc.value;
-    closeModal(profilePopup);
-}); 
 
 const cardAddBtn = document.querySelector('.profile__add-button');
 cardAddBtn.addEventListener('click', evt => {
