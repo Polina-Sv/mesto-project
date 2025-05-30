@@ -1,3 +1,12 @@
+const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+
+const isUrlValid = (inputElement) => {
+  if (inputElement.type === 'url') {
+    return urlRegex.test(inputElement.value);
+  }
+  return true;
+};
+
 const showInputError = (formElement, inputElement, errorMessage) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     
@@ -5,7 +14,7 @@ const showInputError = (formElement, inputElement, errorMessage) => {
     errorElement.textContent = errorMessage;
 };
   
-const hideInputError = (formElement, inputElement) => {
+export const hideInputError = (formElement, inputElement) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     
     inputElement.classList.remove('popup__input_type_error');
@@ -13,11 +22,18 @@ const hideInputError = (formElement, inputElement) => {
 }; 
 
 const isValid = (formElement, inputElement) => {
+    if (inputElement.type === 'url' && !isUrlValid(inputElement)) {
+      showInputError(formElement, inputElement, 'Введите корректный URL');
+      return false;
+    }
+    
     if (!inputElement.validity.valid) {
       showInputError(formElement, inputElement, inputElement.validationMessage);
-    } else {
-      hideInputError(formElement, inputElement);
+      return false;
     }
+    
+    hideInputError(formElement, inputElement);
+    return true;
 };
 
 const setEventListeners = (formElement) => {
@@ -44,8 +60,11 @@ const enableValidation = () => {
 
 const hasInvalidInput = (inputList) => {
     return inputList.some((inputElement) => {
-      return !inputElement.validity.valid;
-    })
+        if (inputElement.type === 'url') {
+            return !inputElement.validity.valid || !isUrlValid(inputElement);
+        }
+        return !inputElement.validity.valid;
+    });
 };
 
 const toggleButtonState = (inputList, buttonElement) => {

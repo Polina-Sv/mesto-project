@@ -1,5 +1,6 @@
 import { getUserData, updateProfileInfo, updateAvatar } from './api.js';
 import {closeModal, openModal} from "./modal.js";
+import { hideInputError } from './validate.js';
 
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
@@ -43,6 +44,8 @@ export function initProfileEditing() {
   editButton.addEventListener('click', () => {
     nameInput.value = profileTitle.textContent;
     aboutInput.value = profileDescription.textContent;
+    hideInputError(editForm, nameInput);
+    hideInputError(editForm, aboutInput);
     openModal(editModal);
   });
 
@@ -66,12 +69,15 @@ function handleProfileFormSubmit(evt) {
     })
     .finally(() => {
       submitButton.textContent = initialText;
+      hideInputError(editForm, nameInput);
+      hideInputError(editForm, aboutInput);
     });
 }
 
 export function initAvatarEditing() {
   avatarEditButton.addEventListener('click', () => {
     avatarForm.reset();
+    hideInputError(avatarForm, avatarUrlInput);
     openModal(avatarModal);
   });
   avatarForm.addEventListener('submit', handleAvatarFormSubmit);
@@ -94,5 +100,6 @@ function handleAvatarFormSubmit(evt) {
     })
     .finally(() => {
       submitButton.textContent = initialText;
+      hideInputError(avatarForm, avatarUrlInput);
     });
 }

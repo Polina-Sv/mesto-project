@@ -1,5 +1,6 @@
 import {closeModal, openModal} from "./modal.js";
 import {getInitialCards, addNewCard, deleteCardApi, likeCard, unlikeCard} from './api.js';
+import { hideInputError } from './validate.js';
 
 const cardsContainer = document.querySelector('.places__list');
 const addButton = document.querySelector('.profile__add-button');
@@ -16,6 +17,8 @@ const popupCaption = imagePopup.querySelector('.popup__caption');
 export function initCardAdding(userId) {
   addButton.addEventListener('click', () => {
     addForm.reset();
+    hideInputError(addForm, placeNameInput);
+    hideInputError(addForm, linkInput);
     openModal(addModal);
   });
 
@@ -40,6 +43,8 @@ function handleAddCardSubmit(evt, userId) {
     })
     .finally(() => {
       submitButton.textContent = initialText;
+      hideInputError(addForm, placeNameInput);
+      hideInputError(addForm, linkInput);
     });
 }
 
